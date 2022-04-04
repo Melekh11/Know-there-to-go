@@ -1,0 +1,42 @@
+{% extends "footer.html" %}
+
+{% block content_page %}
+<header>
+    <div class="header_all">
+
+        <div class="logo_text">
+            <a class="header" href="/"></a>
+        </div>
+
+        <div class="header_right">
+            <nav>
+                <button onclick="location.href = '/choose_place';" type="button" class="no_borders">
+                    <span class="icon icon_choose_place" data-logo="react"></span>
+                </button>
+
+                <button onclick="location.href = '/settings_user';" type="button" class="no_borders">
+                    <span class="icon icon_settings" data-logo="react"></span>
+                </button>
+
+                <button onclick="location.href = '/sing_in';" type="button" class="no_borders">
+                    <span class="header-text" data-logo="react">Войти</span>
+                </button>
+
+                <button onclick="location.href = '/sing_up';" type="button" class="no_borders">
+                    <span class="header-text" data-logo="react">Зарегистрироваться</span>
+                </button>
+
+            </nav>
+        </div>
+    </div>
+</header>
+
+
+<div class="borders_blue">
+    <div class="borders_white">
+    {% block content %}
+    {% endblock %}
+        </div>
+</div>
+
+{% endblock %}
