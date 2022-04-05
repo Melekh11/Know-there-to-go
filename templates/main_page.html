@@ -11,7 +11,32 @@
 </div>
 
 <div class="form-place">
+    <div class="header_form_place">
+        <div>
+            <a href="/place_id" class="no_underline name_place">{{title_place}}</a>
+            <span class="lower_address">{{address}}</span>
+        </div>
+
+        <div>
+            <img class="img_weather_medium_describe" src="/static/img/sun.png">
+            <p class="weather_medium lower_address">погода на сегодня</p>
+        </div>
+
+    </div>
+
+
+    <div class="medium_describe">
+            <img class="img_medium_describe" src="/static/img/{{picture}}">
+            <p class="text_form_place">{{text}}</p> <br>
+            <p class="text_form_place_data_medium text_form_place">
+                c кем приходить: {{turnout}} <br>
+                желательный бюджет: {{budget}} <br>
+                расстояние от Вас: {{distance}} метров
+            </p>
+    </div>
 </div>
+
+
 
 
 

@@ -16,12 +16,18 @@ def main():
 @app.route("/")
 def header():
     all = {}
-    all["title"] = "Парк Горького"
-    all["text"] = "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую"
+    all["title_place"] = "Парк Горького"
+    all["text"] = "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую" \
+                  "fcghvjbkjkjhugyfc ugfyguhijouyt ytfguhijokp drtfyguhi rdtfyguhijo 5dr6ftyguhi jtrdfyguhi tyuh 6fr5t7gyhu tdryguh tcdrvgb rxcty trcdygu tyu tdr tfy try tfyg tcrfyvug tyfug ftygu yftgu ytfguhi ytfguhi  tfygu yft iytvguih ytguhi ytug " \
+                  " yftguih tyfguhi utgyih ouygiho igyuihoi guyih oguyih uygih vytfuh "
     all["photo"] = "/static/img/photo_park.jpg"
-    all["value"] = "0 - 5000(₽)"
-    all["turnout"] = "неограниченно, желательно компанией"
-    return render_template("main_page.html")
+    all["address"] = "Москва, ул. Глваная"
+    all["budget"] = "0 - 5000(₽)"
+    all["picture"] = "photo_park.jpg"
+    all["turnout"] = "желательно c компанией"
+    all["distance"] = 1600
+
+    return render_template("main_page.html", **all)
 
 
 @app.route("/choose_place")

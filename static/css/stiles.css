@@ -4,6 +4,11 @@
     align-items: center;
 }
 
+p{
+    margin: 5px;
+}
+
+
 .header_all{
     display: flex;
     align-items: center;
@@ -101,7 +106,6 @@ header{
     border-style: solid;
     border-color: #4487A7 white white white;
     margin-bottom: 15px;
-    display: flex;
     padding: 24px;
     justify-content: space-between;
 }
@@ -138,6 +142,7 @@ nav{
 
 button{
     margin: 5px;
+    display: inline-block;
 }
 
 .greetings{
@@ -177,13 +182,80 @@ button{
 }
 
 .form-place{
+    display: block;
     width: 1200px;
     height: 550px;
-    
+
     background-image: url("/static/img/background_form_place.jpg");
     margin-left: auto;
     margin-right: auto;
     padding: 15px;
-    filter: blur(1px);
     align-self: center;
 }
+
+.name_place{
+    color: #4487A7;
+    font-size: 55px;
+
+}
+
+.lower_address{
+    display: block;
+    font-size: 20px;
+    color: slategrey;
+    text-align: left;
+    margin: 5px;
+}
+
+.img_medium_describe{
+    float: left;
+
+    height: 400px;
+    width: 700px;
+    margin: 10px;
+}
+
+.header_form_place{
+    justify-content: space-between;
+    display: flex;
+}
+
+.text_form_place{
+    display: inline-block;
+    max-width: 440px;
+    max-height: 200px;
+    overflow: auto;
+    color: #4487A7;
+    font-size: 24px;
+    font-family: Bradley Hand, cursive;
+}
+
+.text_form_place_data_medium{
+    font-size: 20px;
+    color: darkblue;
+    margin-top: 30px;
+    width: 450px;
+    font-family: DejaVu Sans Mono, monospace;
+}
+
+.weather_medium{
+    text-align: right;
+    width: 300px;
+    padding-top: 20px;
+}
+
+.img_weather_medium_describe{
+    height: 70px;
+    width:  70px;
+    float: right;
+}
+
+.no_underline{
+    text-decoration: none;
+}
+
+.medium_describe{
+    width: auto;
+
+}
+
