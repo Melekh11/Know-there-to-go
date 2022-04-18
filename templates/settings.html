@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="borders_blue smt_alone">
+    <form class="needs-validation" method="post">
+        <div class="header_settings">
+            <div class="header_settings_borders">
+                <div class="flex_column">
+                    <div>
+                        <h2>{{name}}</h2>
+                        <div class="mb-3">
+                            <label for="ChangeName" class="form-label">сменить имя</label>
+                            <input type="text" class="form-control" id="ChangeName" value="{{ name }}"
+                                   name="ChangeName" required>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>{{email}}</h2>
+                        <div class="mb-3">
+                            <label for="ChangeEmail" class="form-label">сменить почту</label>
+                            <input type="email" class="form-control" id="ChangeEmail" value="{{ email }}"
+                                   name="ChangeEmail" required>
+                        </div>
+                    </div>
+                  <div>
+                    <div class="col-12">
+                            <button type="submit" class="btn btn-primary">подтвердить измения</button>
+                        </div>
+                  </div>
+                </div>
+            </div>
+            <div class="header_settings_borders">
+                <img class="settings_picture" src="{{image_way}}" alt="аватарка">
+                <div class="mp-3">
+                    <label for="Prof_Pic" class="form-label">загрузить новую</label>
+                    <input type="file" class="form-control" id="Prof_Pic"
+                           aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                </div>
+            </div>
+        </div>
+
+    </form>
+{% if message%}
+<div class="alert alert-danger" role="alert">{{message}}</div>
+{% endif %}
+</div>
+
+
+</div>
+{% endblock %}

@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="borders_blue">
 <div class="greetings">
     <div class="welcome">Добро пожаловать на <br> <span class="nice_text">Know there to go</span></div>
     <p>Этот сайт посвещён нахожденю новых приятгных мест для прогулок и приятного времяпрепровождения <br>
-    На нём вы можете оставлять записи о тех местах, в которых вы побывали <br>
-    Искать новые по тем папраметрам, которые сами укажите</p>
+        На нём вы можете оставлять записи о тех местах, в которых вы побывали <br>
+        Искать новые по тем папраметрам, которые сами укажите</p>
 
-    <p class="left">Вот пару из них, но вы можете настроить фильтры поиска <br> нажав на логотип в верхнем правом углу экрана</p>
+    <p class="left">Вот пару из них, но вы можете настроить фильтры поиска <br> нажав на логотип в верхнем правом углу
+        экрана</p>
 </div>
 
 <div class="form-place">
@@ -26,19 +28,17 @@
 
 
     <div class="medium_describe">
-            <img class="img_medium_describe" src="/static/img/{{picture}}">
+        <img class="img_medium_describe" src="/static/img/{{picture}}">
+        <div class="text_describe_text">
             <p class="text_form_place">{{text}}</p> <br>
             <p class="text_form_place_data_medium text_form_place">
                 c кем приходить: {{turnout}} <br>
                 желательный бюджет: {{budget}} <br>
                 расстояние от Вас: {{distance}} метров
             </p>
+        </div>
     </div>
 </div>
-
-
-
-
-
+</div>
 
 {% endblock %}

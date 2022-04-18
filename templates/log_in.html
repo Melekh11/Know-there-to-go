@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="borders_blue smt_alone">
+    <div class="center_sign_up">
+        <div class="sing_up_form">
+            <form class="needs-validation form_sing_up" method="post">
+
+                <div class="row reg_area">
+
+                    <div class="col">
+
+                        <div class="mb-3">
+                            <label for="validationCustomName" class="form-label">Имя</label>
+                            <input type="text" class="form-control" id="validationCustomName" value="" name="name"
+                                   required>
+                            <div class="valid-feedback">
+                                Все хорошо!
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="Password" name="Password" required>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Войти</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if message%}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+</div>
+{% endblock %}
