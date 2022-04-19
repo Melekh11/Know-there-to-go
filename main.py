@@ -20,9 +20,8 @@ def main():
 def header():
     all = {}
     all["title_place"] = "Парк Горького"
-    all["text"] = "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую" \
-                  "fcghvjbkjkjhugyfc ugfyguhijouyt ytfguhijokp drtfyguhi rdtfyguhijo 5dr6ftyguhi jtrdfyguhi tyuh 6fr5t7gyhu tdryguh tcdrvgb rxcty trcdygu tyu tdr tfy try tfyg tcrfyvug tyfug ftygu yftgu ytfguhi ytfguhi  tfygu yft iytvguih ytguhi ytug " \
-                  " yftguih tyfguhi utgyih ouygiho igyuihoi guyih oguyih uygih vytfuh "
+    all["text"] = "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую"
+
     all["photo"] = "/static/img/photo_park.jpg"
     all["address"] = "Москва, ул. Глваная"
     all["budget"] = "0 - 5000(₽)"
@@ -70,13 +69,19 @@ def log_in():
 
         return render_template("log_in.html", message="неправльный пароль")
 
-@app.route("/settings_user/<int:user_id>", methods=['GET', 'POST'])
-def settings(user_id):
+@app.route("/settings_user", methods=['GET', 'POST'])
+def settings():
     if request.method == "GET":
         all = {}
         all["name"] = "Матвей"
-        all["email"] = "cktkutxd@gmail.com"
         all["image_way"] = "/static/img/icon_user.png"
+        all["email"] = "cktkutxd@gmail.com"
+        all["arr_title"] = ["Парк Горького" for i in range(6)]
+        all["images_way"] = ["/static/img/photo_park.jpg" for i in range(6)]
+        all["arr_text"] = ["Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую"
+                           for i in range(6)]
+        all["count_posts"] = 0
+        print(all["arr_title"])
         return render_template("settings.html", **all)
 
 if __name__ == "__main__":

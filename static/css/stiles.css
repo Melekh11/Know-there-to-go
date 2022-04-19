@@ -195,6 +195,7 @@ button{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    align-items: center;
 }
 
 .borders_white{
@@ -240,9 +241,9 @@ button{
 .img_medium_describe{
     /*float: left;*/
 
-    height: 400px;
-    width: 700px;
-    margin: 10px;
+    height: 40%;
+    width: 60%;
+    margin: 40px;
 }
 
 .header_form_place{
@@ -308,11 +309,13 @@ button{
 .text_describe_text{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
+    width: 30%;
 }
 
 .center_sign_up{
     height: 100%;
+    width: 70%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -330,8 +333,8 @@ button{
 }
 
 .header_settings{
-    margin: 10px;
     padding: 15px;
+    margin: 10px;
     display: flex;
     justify-content: space-between;
     background-image: url("/static/img/background_form_place.jpg");
@@ -361,4 +364,53 @@ button{
     flex-direction: column;
     justify-content: space-around;
     height: 100%;
+}
+
+.all_notes{
+    background: url("/static/img/background_greetings.jpg");
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    margin: 10px;
+    padding: 20px;
+    display: block;
+    width: 85%;
+}
+
+.center{
+    display: flex;
+    align-items: center;
+}
+
+.form_settings{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+
+.text_center{
+    text-align: center;
+}
+
+.btn_add_place{
+    font-family: Gill Sans, sans-serif;
+    font-size: 45px;
+    color: #4487A7;
+    border-style: solid;
+    border-color: #4487A7;
+}
+
+.overflow_text_card{
+    max-height: 150px;
+    overflow: auto;
+}
+
+.cards{
+    margin: 30px;
+    display: inline-block;
+    max-width: 400px;
+}
+
+.form-change_profile{
+    width: 70%;
 }

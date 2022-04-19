@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="borders_blue smt_alone">
-    <form class="needs-validation" method="post">
+<div class="borders_blue">
+    <form class="needs-validation form_settings form-change_profile" method="post">
         <div class="header_settings">
             <div class="header_settings_borders">
                 <div class="flex_column">
@@ -22,11 +22,11 @@
                                    name="ChangeEmail" required>
                         </div>
                     </div>
-                  <div>
-                    <div class="col-12">
+                    <div>
+                        <div class="col-12">
                             <button type="submit" class="btn btn-primary">подтвердить измения</button>
                         </div>
-                  </div>
+                    </div>
                 </div>
             </div>
             <div class="header_settings_borders">
@@ -40,11 +40,37 @@
         </div>
 
     </form>
-{% if message%}
-<div class="alert alert-danger" role="alert">{{message}}</div>
-{% endif %}
-</div>
+    {% if message%}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+
+    <div class="all_notes form_settings">
+
+        {% if count_posts == 0 %}
+        <h3 class="name_place">Вы пока не выкладывали записи</h3>
+        <p class="text_form_place text_center">Есть у Вас инетерсные метса на примете? ;)</p>
+        <br>
+        {% else %}
+        <h3 class="name_place">Вы выложили {{count_posts}} записей</h3>
+<!--        <div class="cards">-->
+        {% for num in range(count_posts) %}
+        <div class="card cards" style="width: 18rem;">
+            <img src="{{ images_way[num] }}" class="card-img-top" alt="картиночка места">
+            <div class="card-body">
+                <h5 class="card-title">{{arr_title[num]}}</h5>
+                <p class="card-text overflow_text_card">{{arr_text[num]}}</p>
+                <a href="" class="btn btn-primary">Посмотреть</a>
+            </div>
+        </div>
+        {% endfor %}
+<!--            </div>-->
+        {% endif %}
+        <button onclick="location.href = '/add_place';" type="button" class="no_borders">
+            <span class="btn_add_place" data-logo="react">Опубликовать новое место</span>
+        </button>
+    </div>
 
 
 </div>
+
 {% endblock %}
