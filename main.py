@@ -103,9 +103,45 @@ def settings():
 @app.route("/add_place", methods=["POST", "GET"])
 def add_place():
     all = {}
-    all["tags"] = ["тег1", "тег2", "тег3", "тег4"]
+    all["tags"] = ["посидеть одному", "посидеть с друзьями", "побыть на свежем воздухе", "поесть", "подвигаться",
+                   "поработать", "спрятаться от дождя / жары", "получить новые впечателния"]
     if request.method == "GET":
         return render_template("add_place.html", **all)
+    if request.method == "POST":
+        try:
+            int(request.form["Min_Cost"])
+        except ValueError:
+            all["message"] = "Цена долдна быть целым положтельным числом"
+            return render_template("add_place.html", **all)
+
+        # условие на существование места
+        #   all["message"] = "такого места не сущесвует в яндекс картах;("
+        #   return render_template("add_place.html", **all)
+
+        result_tags = request.form.getlist("tags")
+        print(result_tags)
+        arr = []
+        for i in range(len(all["tags"])):
+            if all["tags"][i] in result_tags:
+                arr.append((True, i))
+            else:
+                arr.append((False, i))
+        print(arr)  # бедный список со значениями тегов
+        print(request.form["Title"])  # тайтл
+        print(request.form["Address"])  # адрес
+        print(request.form["TextArea"])  # описание
+        file = request.files['PicPlace']  # картинка
+        if file:
+            file.save("!way_here!")
+        print(int(request.form["Min_Cost"]))  # минимальная цена
+        tags_self = request.form["TagsArea"].split("\n")
+        for i in range(len(tags_self)):
+            print(tags_self[i][-2:-1])
+            if tags_self[i][-1] == "\r":
+                tags_self[i] = tags_self[i][:-1]
+        print(tags_self, "!!!")
+        print([(i, tags_self[i][1:]) for i in range(len(tags_self))])  # самодельные теги
+        return redirect("/")
 
 
 if __name__ == "__main__":

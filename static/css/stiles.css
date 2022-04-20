@@ -467,5 +467,8 @@ button{
 
 .bd{
     background-image: url("/static/img/background_form_place.jpg");
+}
 
+.margin-left{
+    margin-left: 30px;
 }
