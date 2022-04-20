@@ -144,5 +144,20 @@ def add_place():
         return redirect("/")
 
 
+@app.route("/place/<int:id>", methods=["POST", "GET"])
+def place(id):
+    if request.method == "GET":
+        all = {
+            "title": "Заголовок",
+            "address": "Фрязевская 15",
+            "text": "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую",
+            "scr": "/static/img/photo_park.jpg",
+            "tags": ["еда", "вода", "зелля", "огонь", "ветер", "вода"],
+            "cost": 5000
+        }
+        return render_template("place.html", **all)
+
+
+
 if __name__ == "__main__":
     main()

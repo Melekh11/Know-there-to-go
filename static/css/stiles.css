@@ -235,7 +235,6 @@ button{
 .name_place{
     color: #4487A7;
     font-size: 55px;
-
 }
 
 .lower_address{
@@ -471,4 +470,40 @@ button{
 
 .margin-left{
     margin-left: 30px;
+}
+
+.header_place{
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+}
+
+.place_form{
+    margin: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.img_place{
+    width: 60%;
+    height: 40%;
+    margin: 20px;
+}
+
+.right-place{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.tags-place{
+    overflow: auto;
+    max-height: 300px;
+    max-width: 300px;
+}
+
+.margin{
+    margin: 20px;
 }
