@@ -2,7 +2,6 @@
 from flask import render_template, Flask, request, redirect
 import datetime
 from data import db_session
-from PIL import Image
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -17,9 +16,12 @@ def main():
 
 
 
+# для отображения лого во все all - ы нужно добавить all["url_im"] = "путь к аватарке"
+
 @app.route("/", methods=['GET', 'POST'])
 def header():
     all = {}
+
     all["title_place"] = "Парк Горького"
     all["text"] = "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую"
 
