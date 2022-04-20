@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="borders_blue">
+<div class="greetings">
+    <div class="welcome">Добро пожаловать на <br> <span class="nice_text">Know where to go</span></div>
+    <p>Этот сайт посвящён нахождению новых приятных мест для прогулок и приятного времяпрепровождения. <br>
+        На нём вы можете оставлять записи о тех местах, в которых вы побывали, и <br>
+        искать новые по тем параметрам, которые сами укажите!</p>
+
+    <p class="left">Вот несколько из них, но вы можете настроить фильтры поиска <br> нажав на логотип в верхнем правом углу
+        экрана.</p>
+</div>
+
+
+{% for place in places %}
+    <div class="borders_blue">
+<div class="form-place">
+    <div class="header_form_place">
+        <div>
+            <a href="/place_id" class="no_underline name_place">{{place.title}}</a>
+            <span class="lower_address">{{place.address}}</span>
+        </div>
+
+        <div>
+            <img class="img_weather_medium_describe" src="/static/img/sun.png">
+            <p class="weather_medium lower_address">погода на сегодня</p>
+        </div>
+
+    </div>
+
+
+    <div class="medium_describe">
+        <img class="img_medium_describe" src="/static/img/uploads/{{place.photo}}">
+        <div class="text_describe_text">
+            <p class="text_form_place">{{place.description}}</p> <br>
+            <p class="text_form_place_data_medium text_form_place">
+                c кем приходить: {{turnout}} <br>
+                желательный бюджет: {{place.cost}} <br>
+                расстояние от Вас: {{distance}} метров
+            </p>
+        </div>
+    </div>
+</div>
+</div>
+    </div>
+{% endfor %}
+
+{% endblock %}

@@ -9,12 +9,6 @@ class PlaceForm(FlaskForm):
     address = StringField("Адрес места", validators=[DataRequired()])
     description = TextAreaField("Расскажите о месте")
     photo = FileField("Выберите фото")
-    # SelectMultipleField("Выберите тег(и)", choices=[
-    #     ("посидеть одному", "посидеть одному"),
-    #     ("посидеть c друзьями", "посидеть c друзьями"),
-    #     ("побыть на свежем воздухе", "побыть на свежем воздухе"),
-    #     ("поесть", "поесть"),
-    # ], option_widget=None)
     alone = BooleanField("посидеть одному")
     together = BooleanField("посидеть с друзьями")
     outside = BooleanField("побыть на свежем воздухе")

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="borders_blue smt_alone">
+    <div class="center_sign_up">
+        <div class="sing_up_form">
+
+            <form class="needs-validation form_sing_up" method="post">
+                {{ form.hidden_tag() }}
+                <div class="row reg_area">
+
+                    <div class="col">
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Почта</label>
+                            <input type="email" class="form-control" id="email" value="" name="email"
+                                   required>
+                            <div class="valid-feedback">
+                                Все хорошо!
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Войти</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if message%}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+</div>
+{% endblock %}

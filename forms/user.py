@@ -22,3 +22,9 @@ class LoginForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
+
+
+class ChangeProfileForm(FlaskForm):
+    name = StringField('Изменить имя')
+    email = EmailField('Изменить почту')
+    photo = FileField('Загрузить новую аватарку')

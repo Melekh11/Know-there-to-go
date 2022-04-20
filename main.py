@@ -12,7 +12,7 @@ from data.place_tag import PlaceTag
 from data.tags import Tags
 
 # формы
-from forms.user import RegisterForm, LoginForm
+from forms.user import RegisterForm, LoginForm, ChangeProfileForm
 from forms.places import PlaceForm, SearchForm
 
 import requests
@@ -26,7 +26,7 @@ app = Flask(__name__)
 
 # вспомогательные штуки для сохранения картинок
 basedir = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = 'static/img/'
+UPLOAD_FOLDER = 'static/img/uploads/'
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, UPLOAD_FOLDER)
@@ -79,7 +79,6 @@ def get_distance(p1, p2):
 
 def main():
     db_session.global_init("db/blogs.db")
-    # app.register_blueprint(news_api.blueprint)
     app.run()
 
 
@@ -96,21 +95,37 @@ def index():
 
     # if current_user.is_authenticated:
     places = db_sess.query(Places).filter(Places.title != '')
-    return render_template("index.html", places=places)
+    return render_template("main_page.html", places=places)
 
 
 # регистрация
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/sign_up', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
     if form.validate_on_submit():
+        print(form.send_emails.data)
+        easy_passwords = ["qwerty", "123456", "1234567890", "password", "012345", "Password", "QWERTY"]
+
         if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация',
+            return render_template('sign_up.html', title='Регистрация',
                                    form=form,
                                    message="Пароли не совпадают")
+        elif len(form.password.data) < 6:
+            return render_template('sign_up.html', title='Регистрация',
+                                   form=form,
+                                   message="Слишком короткий пароль")
+        elif form.password.data in easy_passwords:
+            return render_template('sign_up.html', title='Регистрация',
+                                   form=form,
+                                   message="Слишком простой пароль")
+        elif len(form.name.data) == 0:
+            return render_template('sign_up.html', title='Регистрация',
+                                   form=form,
+                                   message="Имя не должно быть пустым")
+
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация',
+            return render_template('sign_up.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
         # сохранение картинки
@@ -122,29 +137,31 @@ def reqister():
         user = User(
             name=form.name.data,
             email=form.email.data,
-            photo=filename
+            photo=filename,
+            send_emails=form.send_emails.data
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form)
+    return render_template('sign_up.html', title='Регистрация', form=form)
 
 
 # логин
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/log_in', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
-            return redirect("/")
-        return render_template('login.html',
+        if user:
+            if user.check_password(form.password.data):
+                login_user(user)
+                return redirect("/")
+        return render_template('log_in.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', title='Авторизация', form=form)
+    return render_template('log_in.html', title='Авторизация', form=form)
 
 
 # добавление места
@@ -236,9 +253,10 @@ def searchplace():
         # передаем всю инфу с этой формы на страницу с результатами поиска
 
         db_sess = db_session.create_session()
-        valid_tags = list(filter(lambda x: x[0], DEFAULT_TAGS))
 
         # теги
+
+        valid_tags = list(filter(lambda x: x[0], DEFAULT_TAGS))
         tags = list(i[1] for i in valid_tags)
         if form.tag.data:
             if db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first():
@@ -248,7 +266,6 @@ def searchplace():
         # адрес и цена
         address = form.address.data
         cost = form.cost.data
-
 
         return redirect(url_for('searchresults', tags=tags, address=address, cost=cost))
     return render_template('search.html', title='Поиск места', form=form)
@@ -301,6 +318,32 @@ def user_profile():
         'posts': posts,
         'created_date': current_user.created_date
     }
+    form = ChangeProfileForm()
+    if form.validate_on_submit():
+        user = db_sess.query(User).filter(User.id == current_user.id,
+                                          User.name == current_user.name
+                                          ).first()
+
+        if form.name.data:
+            user.name = form.name.data
+        else:
+            user.name = current_user.name
+        if form.email.data:
+            user.email = form.email.data
+        else:
+            user.email = current_user.email
+        if form.photo.data:
+            user.photo = form.name.data
+        else:
+            user.name = current_user.name
+        if form.photo.data:
+            filename = photos.save(form.photo.data)
+            file_url = photos.url(filename)
+
+        # news.is_private = form.is_private.data
+        # db_sess.commit()
+        # db_sess.commit()
+
     return render_template("profile.html", **params)
 
 

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="borders_blue smt_alone">
+    <div class="center_sign_up">
+        <div class="sing_up_form">
+
+            <form class="needs-validation form_sing_up" method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="row reg_area">
+
+                    <div class="col">
+
+                        <div class="mb-3">
+                            <label for="validationCustomName" class="form-label">Имя</label>
+                            <input type="text" class="form-control" id="validationCustomName"
+                                   value="" name="name"
+                                   required>
+                        </div>
+
+                        <br>
+
+                        <div class="mb-3">
+                            <label for="exampleInputEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="exampleInputEmail"
+                                   aria-describedby="emailHelp"
+                                   name="email" required>
+                            <div id="emailHelp" class="form-text">We'll never share your email with
+                                anyone else.
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="send_emails"
+                                       id="invalidCheck2" name="send_emails" required>
+                                <label class="form-check-label" for="invalidCheck2">
+                                    Хочу получать рассылку
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                        </div>
+                    </div>
+                    <div class="col">
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="Password" name="password"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password_again" class="form-label">Повторите пароль</label>
+                            <input type="password" class="form-control" id="password_again"
+                                   name="password_again" required>
+                        </div>
+
+                        <div class="mp-3">
+                            <label for="photo" class="form-label">Ваша аватарка</label>
+                            <input type="file" class="form-control" id="photo"
+                                   aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if message%}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+</div>
+{% endblock %}
