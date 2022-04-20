@@ -2,6 +2,7 @@
 from flask import render_template, Flask, request, redirect
 import datetime
 from data import db_session
+from PIL import Image
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -71,18 +72,41 @@ def log_in():
 
 @app.route("/settings_user", methods=['GET', 'POST'])
 def settings():
+    # при финальном соединении оформлю нормально
+    name = "Матвей"
+    all = {}
+    all["name"] = "Матвей"
+    all["image_way"] = "/static/img/icon_user.png"
+    all["email"] = "cktkutxd@gmail.com"
+    all["arr_title"] = ["Парк Горького" for i in range(6)]
+    all["images_way"] = ["/static/img/photo_park.jpg" for i in range(6)]
+    all["arr_text"] = [
+        "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую"
+        for i in range(6)]
+    all["count_posts"] = 6
     if request.method == "GET":
-        all = {}
-        all["name"] = "Матвей"
-        all["image_way"] = "/static/img/icon_user.png"
-        all["email"] = "cktkutxd@gmail.com"
-        all["arr_title"] = ["Парк Горького" for i in range(6)]
-        all["images_way"] = ["/static/img/photo_park.jpg" for i in range(6)]
-        all["arr_text"] = ["Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую"
-                           for i in range(6)]
-        all["count_posts"] = 0
-        print(all["arr_title"])
         return render_template("settings.html", **all)
+
+    if request.method == "POST":
+
+        # данные нового имени, новой почты, путь к картинке указывай сама!
+
+        print(request.form["ChangeName"])
+        print(request.form["ChangeEmail"])
+        file = request.files['ProfPic']
+        if file:
+            file.save("!way_here!")
+        return redirect("/")
+
+
+
+@app.route("/add_place", methods=["POST", "GET"])
+def add_place():
+    all = {}
+    all["tags"] = ["тег1", "тег2", "тег3", "тег4"]
+    if request.method == "GET":
+        return render_template("add_place.html", **all)
+
 
 if __name__ == "__main__":
     main()

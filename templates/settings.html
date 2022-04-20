@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="borders_blue">
-    <form class="needs-validation form_settings form-change_profile" method="post">
+    <form class="needs-validation form_settings form-change_profile" method="post" enctype="multipart/form-data">
         <div class="header_settings">
             <div class="header_settings_borders">
                 <div class="flex_column">
@@ -33,8 +33,8 @@
                 <img class="settings_picture" src="{{image_way}}" alt="аватарка">
                 <div class="mp-3">
                     <label for="Prof_Pic" class="form-label">загрузить новую</label>
-                    <input type="file" class="form-control" id="Prof_Pic"
-                           aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                    <input type="file" class="form-control" id="Prof_Pic" name="ProfPic"
+                           aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".jpg,.jpeg,.png">
                 </div>
             </div>
         </div>

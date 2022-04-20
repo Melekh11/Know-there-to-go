@@ -179,6 +179,7 @@ button{
 
 
 
+
 .borders_blue{
     /*display: flex;*/
     /*flex-direction: column;*/
@@ -192,6 +193,13 @@ button{
 }
 
 .smt_alone{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.smt_pair{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -254,7 +262,7 @@ button{
 .text_form_place{
     display: inline-block;
     max-width: 440px;
-    max-height: 200px;
+    max-height: 400px;
     overflow: auto;
     color: #4487A7;
     font-size: 24px;
@@ -311,6 +319,7 @@ button{
     flex-direction: column;
     justify-content: space-around;
     width: 30%;
+    max-height: 500px;
 }
 
 .center_sign_up{
@@ -413,4 +422,50 @@ button{
 
 .form-change_profile{
     width: 70%;
+}
+
+.add_place{
+    margin: 40px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.flex-column-between{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.flex-column-around{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.space{
+    margin: 20px;
+}
+
+.ground{
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+}
+
+.mini_title_page{
+    display: inline;
+    margin: 20px;
+    font-size: 55px;
+}
+
+.bd{
+    background-image: url("/static/img/background_form_place.jpg");
+
 }
