@@ -18,6 +18,7 @@ from forms.places import PlaceForm, SearchForm
 import requests
 import math
 import os
+import random
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import datetime
 
@@ -95,7 +96,10 @@ def index():
 
     # if current_user.is_authenticated:
     places = db_sess.query(Places).filter(Places.title != '')
-    return render_template("main_page.html", places=places)
+    place_tags = db_sess.query(PlaceTag).filter()
+    tags = db_sess.query(Tags).filter()
+
+    return render_template("main_page.html", places=places, tags=tags, place_tags=place_tags)
 
 
 # регистрация
@@ -143,7 +147,7 @@ def reqister():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/login')
+        return redirect('/log_in')
     return render_template('sign_up.html', title='Регистрация', form=form)
 
 
