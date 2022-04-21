@@ -3,8 +3,7 @@
 {% block content %}
 <div class="borders_blue">
     <form method="post" enctype="multipart/form-data">
-        {{form.hidden_tag()}}
-        <div class="bd">
+        <div class="bd margin">
             <h1 class="mini_title_page">Добавление места</h1>
             <div class="add_place">
                 <div class="flex-column-around space">
@@ -36,7 +35,8 @@
                         <span class="nice_text space">Добавить теги</span>
                         {% for tag in tags %}
                         <div class="form-check margin-left">
-                            <input class="form-check-input" type="checkbox" value="{{tag}}" id="Check{{tag}}" name="tags">
+                            <input class="form-check-input" type="checkbox" value="{{tag}}" id="Check{{tag}}"
+                                   name="tags">
                             <label class="form-check-label header-text" for="Check{{tag}}">
                                 {{tag}}
                             </label>
@@ -45,17 +45,19 @@
                     </div>
 
                     <div class="col-auto space">
-                        <label class="visually-hidden" for="autoSizingInputGroup">Минимальная цена</label>
+                        <label class="form-label header-text" for="autoSizingInputGroup">Цена</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="autoSizingInputGroup"
-                                   placeholder="Мин сумма для посещения" name="Min_Cost"
+                                   placeholder="" name="Min_Cost"
                                    required>
                             <div class="input-group-text">₽</div>
                         </div>
+                        <div class="form-text">Минимальная сумма для посещения</div>
                     </div>
 
                     <div class="mb-3 space">
-                        <label for="tags" class="form-label header-text">Свои теги(начиная с "#", с новой строки)</label>
+                        <label for="tags" class="form-label header-text">Свои теги(начиная с "#", с новой
+                            строки)</label>
                         <textarea class="form-control" id="tags" name="TagsArea" rows="2">#</textarea>
                     </div>
                 </div>

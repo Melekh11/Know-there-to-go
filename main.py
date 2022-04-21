@@ -16,7 +16,7 @@ def main():
 
 
 
-# для отображения лого во все all - ы нужно добавить all["url_im"] = "путь к аватарке"
+# для отображения лого во все all - ы нужно добавить all["url_im"] = "url(путь к аватарке)"
 
 @app.route("/", methods=['GET', 'POST'])
 def header():
@@ -24,7 +24,7 @@ def header():
 
     all["title_place"] = "Парк Горького"
     all["text"] = "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую"
-
+    all["url_im"] = "url(/static/img/default_user_logo.png)"
     all["photo"] = "/static/img/photo_park.jpg"
     all["address"] = "Москва, ул. Глваная"
     all["budget"] = "0 - 5000(₽)"
@@ -35,25 +35,31 @@ def header():
     return render_template("main_page.html", **all)
 
 
-@app.route("/choose_place")
+@app.route("/choose_place", methods=["POST", "GET"])
 def choose_place():
-    return "yep"
+    all = {}
+    all["tags"] = ["посидеть одному", "посидеть с друзьями", "побыть на свежем воздухе", "поесть", "подвигаться",
+                   "поработать", "спрятаться от дождя / жары", "получить новые впечателния"]
+    if request.method == "GET":
+        return render_template("search_place.html", **all)
 
 
 @app.route("/sing_up", methods=['GET', 'POST'])
 def sing_up():
+    all = {}
+    all["url_im"] = "/static/img/icon_user.png"
     if request.method == "GET":
-        return render_template("sing_up.html")
+        return render_template("sing_up.html", **all)
     if request.method == "POST":
         easy_passwords = ["qwerty", "123456", "1234567890", "password", "012345", "Password", "QWERTY"]
         if request.form["Password"] != request.form["PasswordAgain"]:
-            return render_template("sing_up.html", message="Пароли не совпадают")
+            return render_template("sing_up.html", message="Пароли не совпадают", **all)
         elif len(request.form["Password"]) < 6:
-            return render_template("sing_up.html", message="Слишком короткий пароль")
+            return render_template("sing_up.html", message="Слишком короткий пароль", **all)
         elif request.form["Password"] in easy_passwords:
-            return render_template("sing_up.html", message="Слишком простой пароль")
+            return render_template("sing_up.html", message="Слишком простой пароль", **all)
         elif len(request.form["name"]) == 0:
-            return render_template("sing_up.html", message="Имя не должоно быть пустым")
+            return render_template("sing_up.html", message="Имя не должоно быть пустым", **all)
 
         name = request.form['name']
         password = request.form['name']
@@ -64,13 +70,14 @@ def sing_up():
 
 @app.route("/log_in", methods=['GET', 'POST'])
 def log_in():
+    all = {}
+    all["url_im"] = "/static/img/icon_user.png"
     if request.method == "GET":
-        return render_template("log_in.html")
+        return render_template("log_in.html", **all)
     if request.method == "POST":
-
+        all["message"] = "неправльный пароль"
         # TODO: сравнение введённых с БД
-
-        return render_template("log_in.html", message="неправльный пароль")
+        return render_template("log_in.html")
 
 @app.route("/settings_user", methods=['GET', 'POST'])
 def settings():
@@ -78,6 +85,7 @@ def settings():
     name = "Матвей"
     all = {}
     all["name"] = "Матвей"
+    all["url_im"] = "/static/img/icon_user.png"
     all["image_way"] = "/static/img/icon_user.png"
     all["email"] = "cktkutxd@gmail.com"
     all["arr_title"] = ["Парк Горького" for i in range(6)]
@@ -151,11 +159,12 @@ def place(id):
     if request.method == "GET":
         all = {
             "title": "Заголовок",
-            "address": "Фрязевская 15",
+            "address": "Москва, ул. Солянка 14",
             "text": "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую",
             "scr": "/static/img/photo_park.jpg",
             "tags": ["еда", "вода", "зелля", "огонь", "ветер", "вода"],
-            "cost": 5000
+            "cost": 5000,
+            "url_im": "urm(/static/img/icon_user.png)"
         }
         return render_template("place.html", **all)
 

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="borders_blue">
+    <form method="post" enctype="multipart/form-data">
+        <div class="bd margin padding">
+            <h1 class="mini_title_page">Параметры, по которым будет поиск</h1>
+            <div class="flex-row">
+                <div>
+                    <span class="nice_text space">Теги</span>
+                    {% for tag in tags %}
+                    <div class="form-check margin-left">
+                        <input class="form-check-input" type="checkbox" value="{{tag}}" id="Check{{tag}}" name="tags">
+                        <label class="form-check-label header-text" for="Check{{tag}}">
+                            {{tag}}
+                        </label>
+                    </div>
+                    {% endfor %}
+
+                    {% if message%}
+                    <div class="alert alert-danger" role="alert">{{message}}</div>
+                    {% endif %}
+
+                </div>
+                <div>
+                    <div class="mb-3 space">
+                        <label for="tags" class="form-label header-text">Другие теги(начиная с "#", с новой
+                            строки)</label>
+                        <textarea class="form-control" id="tags" name="TagsArea" rows="2">#</textarea>
+                    </div>
+                    <div>
+                        <div class="mb-3 space">
+                            <label for="address" class="form-label header-text">Адрес</label>
+                            <input type="text" class="form-control" id="address" value="" name="Address"
+                                   required>
+                            <div class="form-text">Результаты поиска будут отссортированы в зависимости от удалённости
+                                от
+                                введённого адреса
+                            </div>
+
+                            <div class="col-auto margin-up-down">
+                                <label class="form-label header-text" for="autoSizingInputGroup">Цена</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="autoSizingInputGroup"
+                                           placeholder="" name="Min_Cost"
+                                           required>
+                                    <div class="input-group-text">₽</div>
+                                </div>
+                                <div class="form-text">Сколько не жалко потратить</div>
+                            </div>
+                            <div class="col-12 space">
+                                <button type="submit" class="btn btn-primary">Искать</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% if count_posts %}
+
+    <div class="all_notes form_settings">
+
+        <h3 class="name_place">Нашлось {{count_posts}} записей</h3>
+        {% for num in range(count_posts) %}
+        <div class="card cards" style="width: 18rem;">
+            <img src="{{ images_way[num] }}" class="card-img-top" alt="картиночка места">
+            <div class="card-body">
+                <h5 class="card-title">{{arr_title[num]}}</h5>
+                <p class="card-text overflow_text_card">{{arr_text[num]}}</p>
+                <a href="" class="btn btn-primary">Посмотреть</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

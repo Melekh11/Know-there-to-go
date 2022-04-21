@@ -9,25 +9,29 @@
                 <div>
                     <img class="img_weather_medium_describe margin" src="/static/img/sun.png">
                     <p class="weather_medium margin">{{address}}</p>
-                    </div>
+                </div>
             </div>
             <div class="place_form">
                 <img class="img_place" src="{{scr}}" alt="картинка места">
+
                 <div class="right-place">
                     <h4>Описание</h4>
                     <p class="text_form_place">{{text}}</p>
                     <div class="flex-row">
-                        <h5>Теги:</h5>
-                        <div class="tags-place">
-                            <ul>
-                                {% for tag in tags %}
-                                <li> {{tag}}</li>
-                                {% endfor %}
-                            </ul>
+                        <div style="display: block">
+                            <h5 style="text-align: center">Теги:</h5>
+                            <div class="tags-place">
+                                <ul>
+                                    {% for tag in tags %}
+                                    <li class=""> {{tag}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
-                        <span>Минимальная цена:</span>
-                        <br>
-                        <p>{{cost}} рублей</p>
+                        <div style="display: block">
+                            <h4>Минимальная цена:</h4>
+                            <p>{{cost}} рублей</p>
+                        </div>
                     </div>
                 </div>
             </div>
