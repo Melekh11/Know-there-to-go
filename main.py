@@ -1,11 +1,10 @@
 import requests
 from flask import Flask
-from flask import redirect, make_response, request, session, render_template, jsonify, url_for
+from flask import redirect, make_response, request, render_template, jsonify, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
-from data import db_session, news_api
-
 # дб
+from data import db_session
 from data.users import User
 from data.places import Places
 from data.place_tag import PlaceTag
@@ -18,9 +17,7 @@ from forms.places import PlaceForm, SearchForm
 import requests
 import math
 import os
-import random
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
-import datetime
 
 
 app = Flask(__name__)
@@ -169,75 +166,175 @@ def login():
 
 
 # добавление места
-@app.route('/postplace', methods=['GET', 'POST'])
+@app.route('/post_place', methods=['GET', 'POST'])
 @login_required
 def postplace():
-    form = PlaceForm()
-    if form.validate_on_submit():
+    all = {}
+    all["tags"] = ["посидеть одному", "посидеть с друзьями", "побыть на свежем воздухе", "поесть",
+                   "подвигаться",
+                   "поработать", "спрятаться от дождя / жары", "получить новые впечателния"]
+    if request.method == "GET":
+        return render_template("add_place.html", **all)
+    if request.method == "POST":
+        try:
+            int(request.form["Min_Cost"])
+        except ValueError:
+            all["message"] = "Цена долдна быть целым положтельным числом"
+            return render_template("add_place.html", **all)
+
         db_sess = db_session.create_session()
 
         # проверка, правильный ли адрес через геокодер
-        if not get_coordinates(form.address.data):
-            return render_template('post.html', title='Добавление места',
-                                   form=form,
-                                   message="Такого адреса не существует")
+        if not get_coordinates(request.form['Address']):
+          all["message"] = "такого места не сущесвует в яндекс картах;("
+          return render_template("add_place.html", **all)
 
-        filename = None
-        if form.photo.data:
-            filename = photos.save(form.photo.data)
-            file_url = photos.url(filename)
+        result_tags = request.form.getlist("tags")
+        print(result_tags)
+        arr = []
+        for i in range(len(all["tags"])):
+            if all["tags"][i] in result_tags:
+                arr.append((True, i + 1))
+            else:
+                arr.append((False, i + 1))
+        print(arr)  # бедный список со значениями тегов
+        print(request.form["Title"])  # тайтл
+        print(request.form["Address"])  # адрес
+        print(request.form["TextArea"])  # описание
+        file = request.files['PicPlace']  # картинка
+        print(file.filename)
+        if file:
+            photos.save(file)
+        print(int(request.form["Min_Cost"]))  # минимальная цена
+        tags_self = request.form["TagsArea"].split("\n")
+        for i in range(len(tags_self)):
+            print(tags_self[i][-2:-1])
+            if tags_self[i][-1] == "\r":
+                tags_self[i] = tags_self[i][:-1]
+        print(tags_self, "!!!")
+        print([(i, tags_self[i][1:]) for i in range(len(tags_self))])  # самодельные теги
 
         place = Places(
-            title=form.title.data,
-            address=form.address.data,
-            description=form.description.data,
-            cost=form.cost.data,
-            user_id=current_user.id,
-            photo=filename
+                    title=request.form["Title"],
+                    address=request.form["Address"],
+                    description=request.form["TextArea"],
+                    cost=int(request.form["Min_Cost"]),
+                    user_id=current_user.id,
+                    photo=file.filename
+                             )
 
-        )
         db_sess.add(place)
         db_sess.commit()
 
-        # теги по умолчанию (посидеть одному, итд)
-        DEFAULT_TAGS = [
-            (form.alone.data, 1), (form.together.data, 2), (form.outside.data, 3),
-            (form.eat.data, 4),
-            (form.move.data, 5), (form.work.data, 6), (form.hide.data, 7), (form.exciting.data, 8)
-        ]
-        valid_tags = list(filter(lambda x: x[0], DEFAULT_TAGS))
+        valid_tags = list(filter(lambda x: x[0], arr))
         for i in valid_tags:
             place_tag = PlaceTag(
-                tag_id=i[1],
-                place_id=place.id
-            )
+                        tag_id=i[1],
+                        place_id=place.id
+                    )
             db_sess.add(place_tag)
             db_sess.commit()
 
-        # доп. тег (проверка, существует ли он, если нет, добалвение его)
-        if form.tag.data:
-            if not db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first():
-                tag = Tags(
-                    title=form.tag.data
-                )
-                db_sess.add(tag)
-                db_sess.commit()
-                place_tag = PlaceTag(
-                    tag_id=tag.id,
-                    place_id=place.id
-                )
-                db_sess.add(place_tag)
-                db_sess.commit()
-            else:
-                tag = db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first()
-                place_tag = PlaceTag(
-                    tag_id=tag.id,
-                    place_id=place.id
-                )
-                db_sess.add(place_tag)
-                db_sess.commit()
-        return redirect('/')
-    return render_template('post.html', title='Добавление места', form=form)
+
+        new_tags = [i[1:] for i in tags_self]
+        # доп. теги (проверка, существует ли он, если нет, добалвение его)
+        if new_tags:
+            for i in new_tags:
+                if not db_sess.query(Tags).filter(Tags.title.like(i)).first():
+                    tag = Tags(
+                        title=i
+                    )
+                    db_sess.add(tag)
+                    db_sess.commit()
+                    place_tag = PlaceTag(
+                        tag_id=tag.id,
+                        place_id=place.id
+                    )
+                    db_sess.add(place_tag)
+                    db_sess.commit()
+                else:
+                    tag = db_sess.query(Tags).filter(Tags.title.like(i)).first()
+                    place_tag = PlaceTag(
+                        tag_id=tag.id,
+                        place_id=place.id
+                    )
+                    db_sess.add(place_tag)
+                    db_sess.commit()
+
+
+        return redirect("/")
+    return render_template('add_place.html', title='Добавление места')
+#     form = PlaceForm()
+#     if form.validate_on_submit():
+#         db_sess = db_session.create_session()
+#
+#         # проверка, правильный ли адрес через геокодер
+#         if not get_coordinates(form.address.data):
+#             return render_template('post.html', title='Добавление места',
+#                                    form=form,
+#                                    message="Такого адреса не существует")
+#
+#         filename = None
+#         if form.photo.data:
+#             filename = photos.save(form.photo.data)
+#             file_url = photos.url(filename)
+#
+#         place = Places(
+#             title=form.title.data,
+#             address=form.address.data,
+#             description=form.description.data,
+#             cost=form.cost.data,
+#             user_id=current_user.id,
+#             photo=filename
+#
+#         )
+#         db_sess.add(place)
+#         db_sess.commit()
+#
+#         # теги по умолчанию (посидеть одному, итд)
+#         DEFAULT_TAGS = [
+#             (form.alone.data, 1), (form.together.data, 2), (form.outside.data, 3),
+#             (form.eat.data, 4),
+#             (form.move.data, 5), (form.work.data, 6), (form.hide.data, 7), (form.exciting.data, 8)
+#         ]
+#         valid_tags = list(filter(lambda x: x[0], DEFAULT_TAGS))
+#         for i in valid_tags:
+#             place_tag = PlaceTag(
+#                 tag_id=i[1],
+#                 place_id=place.id
+#             )
+#             db_sess.add(place_tag)
+#             db_sess.commit()
+#
+#         # доп. тег (проверка, существует ли он, если нет, добалвение его)
+#         if form.tag.data:
+#             if not db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first():
+#                 tag = Tags(
+#                     title=form.tag.data
+#                 )
+#                 db_sess.add(tag)
+#                 db_sess.commit()
+#                 place_tag = PlaceTag(
+#                     tag_id=tag.id,
+#                     place_id=place.id
+#                 )
+#                 db_sess.add(place_tag)
+#                 db_sess.commit()
+#             else:
+#                 tag = db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first()
+#                 place_tag = PlaceTag(
+#                     tag_id=tag.id,
+#                     place_id=place.id
+#                 )
+#                 db_sess.add(place_tag)
+#                 db_sess.commit()
+#         return redirect('/')
+#     return render_template('add_place.html', title='Добавление места', form=form)
+
+
+
+
+
 
 
 # поиск места

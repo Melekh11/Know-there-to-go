@@ -17,51 +17,50 @@
 
 
     {% for place in places %}
-    <div class="borders_blue">
-        <div class="form-place">
-            <div class="header_form_place">
-                <div>
-                    <a href="/place_id" class="no_underline name_place">{{place.title}}</a>
-                    <span class="lower_address">{{place.address}}</span>
-                </div>
-
-                <div>
-                    <img class="img_weather_medium_describe" src="/static/img/sun.png">
-                    <p class="weather_medium lower_address">погода на сегодня</p>
-                </div>
-
+    <div class="form-place">
+        <div class="header_form_place">
+            <div>
+                <a href="/place_id" class="no_underline name_place">{{place.title}}</a>
+                <span class="lower_address">{{place.address}}</span>
             </div>
 
+            <div>
+                <img class="img_weather_medium_describe" src="/static/img/sun.png">
+                <p class="weather_medium lower_address">погода на сегодня</p>
+            </div>
 
-            <div class="medium_describe">
-                <img class="img_medium_describe" src="/static/img/uploads/{{place.photo}}">
-                <div class="text_describe_text">
-                    <p class="text_form_place">{{place.description}}</p> <br>
-                    <p class="text_form_place_data_medium text_form_place">
-                        теги: <br>
-                        {% for i in place_tags %}
+        </div>
 
-                        {% if place.id == i.place_id %}
 
-                        {% for j in tags %}
+        <div class="medium_describe">
+            <img class="img_medium_describe" src="/static/img/uploads/{{place.photo}}">
+            <div class="text_describe_text">
+                <p class="text_form_place">{{place.description}}</p> <br>
+                <p class="text_form_place_data_medium text_form_place">
+                    теги: <br>
+                    {% for i in place_tags %}
 
-                        {% if j.id == i.tag_id %}
-                        #{{ j.title }}
-                        {% endif %}
+                    {% if place.id == i.place_id %}
 
-                        {% endfor %}
+                    {% for j in tags %}
 
-                        {% endif %}
+                    {% if j.id == i.tag_id %}
+                    #{{ j.title }}
+                    {% endif %}
 
-                        {% endfor %}<br>
-                        <br>
-                        минимальный бюджет: {{place.cost}} <br>
-                    </p>
-                </div>
+                    {% endfor %}
+
+                    {% endif %}
+
+                    {% endfor %}<br>
+                    <br>
+                    минимальный бюджет: {{place.cost}} <br>
+                </p>
             </div>
         </div>
     </div>
 </div>
+
 {% endfor %}
 
 {% endblock %}
