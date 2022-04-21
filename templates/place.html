@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="borders_blue">
+    <form method="post" enctype="multipart/form-data">
+        <div class="bd">
+            <div class="header_place">
+                <h1 class="name_place margin">{{title}}</h1>
+                <div>
+                    <img class="img_weather_medium_describe margin" src="/static/img/sun.png">
+                    <p class="weather_medium margin">{{address}}</p>
+                    </div>
+            </div>
+            <div class="place_form">
+                <img class="img_place" src="{{scr}}" alt="картинка места">
+                <div class="right-place">
+                    <h4>Описание</h4>
+                    <p class="text_form_place">{{text}}</p>
+                    <div class="flex-row">
+                        <h5>Теги:</h5>
+                        <div class="tags-place">
+                            <ul>
+                                {% for tag in tags %}
+                                <li> {{tag}}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <span>Минимальная цена:</span>
+                        <br>
+                        <p>{{cost}} рублей</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

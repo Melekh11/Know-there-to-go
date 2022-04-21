@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="borders_blue">
+    <form method="post" enctype="multipart/form-data">
+        <div class="bd">
+            <h1 class="mini_title_page">Добавление места</h1>
+            <div class="add_place">
+                <div class="flex-column-around space">
+                    <div class="mb-3">
+                        <label for="title" class="form-label header-text">Заголовок</label>
+                        <input type="text" class="form-control" id="title" value="" name="Title"
+                               required>
+                    </div>
+
+                    <div class="mb-3 space">
+                        <label for="address" class="form-label header-text">Адрес</label>
+                        <input type="text" class="form-control" id="address" value="" name="Address"
+                               required>
+                    </div>
+
+                    <div class="mb-3 space">
+                        <label for="TextArea" class="form-label header-text">Краткое описание места</label>
+                        <textarea class="form-control" id="TextArea" name="TextArea" rows="3"> </textarea>
+                    </div>
+
+                    <div class="mp-3 space">
+                        <label for="PicPlace" class="form-label header-text">Загрузить фотографию места</label>
+                        <input type="file" class="form-control" id="PicPlace" name="PicPlace"
+                               aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".jpg,.jpeg,.png">
+                    </div>
+                </div>
+                <div class="flex-column-between">
+                    <div>
+                        <span class="nice_text space">Добавить теги</span>
+                        {% for tag in tags %}
+                        <div class="form-check margin-left">
+                            <input class="form-check-input" type="checkbox" value="{{tag}}" id="Check{{tag}}" name="tags">
+                            <label class="form-check-label header-text" for="Check{{tag}}">
+                                {{tag}}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-auto space">
+                        <label class="visually-hidden" for="autoSizingInputGroup">Минимальная цена</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="autoSizingInputGroup"
+                                   placeholder="Мин сумма для посещения" name="Min_Cost"
+                                   required>
+                            <div class="input-group-text">₽</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 space">
+                        <label for="tags" class="form-label header-text">Свои теги(начиная с "#", с новой строки)</label>
+                        <textarea class="form-control" id="tags" name="TagsArea" rows="2">#</textarea>
+                    </div>
+                </div>
+                <div class="ground">
+
+                    {% if message%}
+                    <div class="alert alert-danger" role="alert">{{message}}</div>
+                    {% endif %}
+
+                    <div class="col-12 space">
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
