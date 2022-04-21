@@ -42,6 +42,37 @@ def choose_place():
                    "поработать", "спрятаться от дождя / жары", "получить новые впечателния"]
     if request.method == "GET":
         return render_template("search_place.html", **all)
+    if request.method == "POST":
+
+        print("!!!!!")
+
+        try:
+            int(request.form["MinCost"])
+        except ValueError:
+            all["message"] = "Цена должна быть целым положительным числом"
+            return render_template("search_place.html", **all)
+
+        print(request.form.getlist("tags"))
+        arr = []
+        result_tags = request.form.getlist("tags")
+        for i in range(len(all["tags"])):
+            if all["tags"][i] in result_tags:
+                arr.append((True, i))
+            else:
+                arr.append((False, i))
+        print(arr)  # бедный список со значениями тегов
+
+        tags_self = request.form["TagsArea"].split("\n")
+        for i in range(len(tags_self)):
+            print(tags_self[i][-2:-1])
+            if tags_self[i][-1] == "\r":
+                tags_self[i] = tags_self[i][:-1]
+        print(tags_self, "!!!")
+        print([(i, tags_self[i][1:]) for i in range(len(tags_self))])  # самодельные теги
+
+        print(request.form["Address"])  # адрес
+        print(request.form["MinCost"])
+        return redirect("/")
 
 
 @app.route("/sing_up", methods=['GET', 'POST'])
@@ -156,8 +187,7 @@ def add_place():
 
 @app.route("/place/<int:id>", methods=["POST", "GET"])
 def place(id):
-    if request.method == "GET":
-        all = {
+    all = {
             "title": "Заголовок",
             "address": "Москва, ул. Солянка 14",
             "text": "Парк, подходящий как и для неспешных прогулой возле Москвы реки, так и для активного отдыха: в парке есть качели, даже верёвочный городок. В солгечные дни здесь солнечно а в пасмурные естьь гру укрыться от дождя. Всем советую",
@@ -166,7 +196,11 @@ def place(id):
             "cost": 5000,
             "url_im": "urm(/static/img/icon_user.png)"
         }
+    if request.method == "GET":
         return render_template("place.html", **all)
+
+
+
 
 
 
