@@ -10,14 +10,25 @@
 
         <div class="header_right">
             <nav>
+
+
                 <button onclick="location.href = '/searchplace';" type="button" class="no_borders">
                     <span class="icon icon_choose_place" data-logo="react"></span>
                 </button>
 
                 {% if current_user.is_authenticated %}
-                <button onclick="location.href = '/user_profile';" type="button" class="no_borders">
-                    <span class="icon icon_settings" data-logo="react"></span>
+
+                <button onclick="location.href = '/post_place';" type="button" class="no_borders">
+                    <span class="icon icon_add_place" data-logo="react"></span>
                 </button>
+
+
+                <button onclick="location.href = '/user_profile';" type="button" class="no_borders"
+                >
+                    <span style="background-image:{{url_im}}; border-radius: 50%; margin-top: 5px"
+                          class="icon" data-logo="react"></span>
+                </button>
+
 
                 <button onclick="location.href = '/logout';" type="button" class="no_borders">
                     <span class="header-text" data-logo="react">Выйти</span>
@@ -32,6 +43,7 @@
                 <button onclick="location.href = '/sign_up';" type="button" class="no_borders">
                     <span class="header-text" data-logo="react">Зарегистрироваться</span>
                 </button>
+
 
                 {% endif %}
 

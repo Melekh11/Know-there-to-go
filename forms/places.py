@@ -18,7 +18,7 @@ class PlaceForm(FlaskForm):
     hide = BooleanField("спрятаться от дождя/жары")
     exciting = BooleanField("получить новые впечатления")
 
-    tag = StringField("Другой тег")
+    tag = TextAreaField("Другой тег")
 
     cost = IntegerField("Минимальная цена для места", default=0)
 

@@ -2,31 +2,32 @@
 
 {% block content %}
 <div class="borders_blue">
-    <form method="post" enctype="multipart/form-data">
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
         <div class="bd">
             <h1 class="mini_title_page">Добавление места</h1>
             <div class="add_place">
                 <div class="flex-column-around space">
                     <div class="mb-3">
                         <label for="title" class="form-label header-text">Заголовок</label>
-                        <input type="text" class="form-control" id="title" value="" name="Title"
+                        <input type="text" class="form-control" id="title" value="" name="title"
                                required>
                     </div>
 
                     <div class="mb-3 space">
                         <label for="address" class="form-label header-text">Адрес</label>
-                        <input type="text" class="form-control" id="address" value="" name="Address"
+                        <input type="text" class="form-control" id="address" value="" name="address"
                                required>
                     </div>
 
                     <div class="mb-3 space">
-                        <label for="TextArea" class="form-label header-text">Краткое описание места</label>
-                        <textarea class="form-control" id="TextArea" name="TextArea" rows="3"> </textarea>
+                        <label for="description" class="form-label header-text">Краткое описание места</label>
+                        <textarea class="form-control" id="description" rows="3" name="description"> </textarea>
                     </div>
 
                     <div class="mp-3 space">
-                        <label for="PicPlace" class="form-label header-text">Загрузить фотографию места</label>
-                        <input type="file" class="form-control" id="PicPlace" name="PicPlace"
+                        <label for="photo" class="form-label header-text">Загрузить фотографию места</label>
+                        <input type="file" class="form-control" id="photo" name="photo"
                                aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".jpg,.jpeg,.png">
                     </div>
                 </div>
@@ -35,27 +36,27 @@
                         <span class="nice_text space">Добавить теги</span>
                         {% for tag in tags %}
                         <div class="form-check margin-left">
-                            <input class="form-check-input" type="checkbox" value="{{tag}}" id="Check{{tag}}" name="tags">
-                            <label class="form-check-label header-text" for="Check{{tag}}">
-                                {{tag}}
+                            <input class="form-check-input" type="checkbox" value="{{tag[0]}}" id="{{tag[0]}}" name="{{tag[0]}}">
+                            <label class="form-check-label header-text" for="{{tag[0]}}">
+                                {{tag[1]}}
                             </label>
                         </div>
                         {% endfor %}
                     </div>
 
                     <div class="col-auto space">
-                        <label class="visually-hidden" for="autoSizingInputGroup">Минимальная цена</label>
+                        <label class="visually-hidden" for="cost">Минимальная цена</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="autoSizingInputGroup"
-                                   placeholder="Мин сумма для посещения" name="Min_Cost"
+                            <input type="text" class="form-control" id="cost"
+                                   placeholder="Минимальная сумма для посещения" name="cost"
                                    required>
                             <div class="input-group-text">₽</div>
                         </div>
                     </div>
 
                     <div class="mb-3 space">
-                        <label for="tags" class="form-label header-text">Свои теги(начиная с "#", с новой строки)</label>
-                        <textarea class="form-control" id="tags" name="TagsArea" rows="2">#</textarea>
+                        <label for="tag" class="form-label header-text">Свои теги (каждый с новой строки)</label>
+                        <textarea class="form-control" id="tag" name="tag" rows="2"></textarea>
                     </div>
                 </div>
                 <div class="ground">

@@ -36,6 +36,15 @@ photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 patch_request_class(app)
 
+
+# константы для тегов
+DEFAULT_TAGS_NAMES = [
+            ('alone', 'посидеть одному'), ('together', 'посидеть с друзьями'),
+            ('outside', 'побыть на свежем воздухе'), ('eat', 'поесть'), ('move', 'подвигаться'),
+            ('work', 'поработать/поучиться'), ('hide', 'спрятаться от дождя/жары'),
+            ('exciting', 'получить новые впечатления')]
+
+
 # функции для геокодера
 
 
@@ -75,6 +84,15 @@ def get_distance(p1, p2):
     return round(distance)
 
 
+# проверить аватарку юзера:
+def user_photo(user):
+    if user.is_authenticated:
+        if user.photo:
+            return f'url({UPLOAD_FOLDER + user.photo})'
+        else:
+            return f'url(static/img/default_user_logo.png)'
+
+
 def main():
     db_session.global_init("db/blogs.db")
     app.run()
@@ -83,20 +101,13 @@ def main():
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    # places = Places()
-    # places.title = "ВДНХ"
-    # places.address = "Проспект мира, 119"
-    # places.description = "Выставка достижений"
-    # places.user_id = 1
-    # db_sess.add(places)
-    # db_sess.commit()
-
-    # if current_user.is_authenticated:
     places = db_sess.query(Places).filter(Places.title != '')
     place_tags = db_sess.query(PlaceTag).filter()
     tags = db_sess.query(Tags).filter()
 
-    return render_template("main_page.html", places=places, tags=tags, place_tags=place_tags)
+    url_im = user_photo(current_user)
+
+    return render_template("main_page.html", places=places, tags=tags, place_tags=place_tags, url_im=url_im)
 
 
 # регистрация
@@ -133,7 +144,6 @@ def reqister():
         filename = None
         if form.photo.data:
             filename = photos.save(form.photo.data)
-            file_url = photos.url(filename)
 
         user = User(
             name=form.name.data,
@@ -169,77 +179,60 @@ def login():
 @app.route('/post_place', methods=['GET', 'POST'])
 @login_required
 def postplace():
-    all = {}
-    all["tags"] = ["посидеть одному", "посидеть с друзьями", "побыть на свежем воздухе", "поесть",
-                   "подвигаться",
-                   "поработать", "спрятаться от дождя / жары", "получить новые впечателния"]
-    if request.method == "GET":
-        return render_template("add_place.html", **all)
-    if request.method == "POST":
-        try:
-            int(request.form["Min_Cost"])
-        except ValueError:
-            all["message"] = "Цена долдна быть целым положтельным числом"
-            return render_template("add_place.html", **all)
+    url_im = user_photo(current_user)
+    form = PlaceForm()
 
+    if form.validate_on_submit():
         db_sess = db_session.create_session()
 
         # проверка, правильный ли адрес через геокодер
-        if not get_coordinates(request.form['Address']):
-          all["message"] = "такого места не сущесвует в яндекс картах;("
-          return render_template("add_place.html", **all)
+        if not get_coordinates(form.address.data):
+            return render_template('add_place.html', title='Добавление места',
+                                   form=form,
+                                   message="Такого адреса не существует", tags=DEFAULT_TAGS_NAMES, url_im=url_im)
+        try:
+            a = int(form.cost.data)
+        except ValueError:
+            return render_template('add_place.html', title='Добавление места',
+                                   form=form,
+                                   message="Цена должна быть положительным целым числом", tags=DEFAULT_TAGS_NAMES, url_im=url_im)
 
-        result_tags = request.form.getlist("tags")
-        print(result_tags)
-        arr = []
-        for i in range(len(all["tags"])):
-            if all["tags"][i] in result_tags:
-                arr.append((True, i + 1))
-            else:
-                arr.append((False, i + 1))
-        print(arr)  # бедный список со значениями тегов
-        print(request.form["Title"])  # тайтл
-        print(request.form["Address"])  # адрес
-        print(request.form["TextArea"])  # описание
-        file = request.files['PicPlace']  # картинка
-        print(file.filename)
-        if file:
-            photos.save(file)
-        print(int(request.form["Min_Cost"]))  # минимальная цена
-        tags_self = request.form["TagsArea"].split("\n")
-        for i in range(len(tags_self)):
-            print(tags_self[i][-2:-1])
-            if tags_self[i][-1] == "\r":
-                tags_self[i] = tags_self[i][:-1]
-        print(tags_self, "!!!")
-        print([(i, tags_self[i][1:]) for i in range(len(tags_self))])  # самодельные теги
+        filename = None
+        if form.photo.data:
+            filename = photos.save(form.photo.data)
+            file_url = photos.url(filename)
 
         place = Places(
-                    title=request.form["Title"],
-                    address=request.form["Address"],
-                    description=request.form["TextArea"],
-                    cost=int(request.form["Min_Cost"]),
-                    user_id=current_user.id,
-                    photo=file.filename
-                             )
+            title=form.title.data,
+            address=form.address.data,
+            description=form.description.data,
+            cost=form.cost.data,
+            user_id=current_user.id,
+            photo=filename
 
+        )
         db_sess.add(place)
         db_sess.commit()
 
-        valid_tags = list(filter(lambda x: x[0], arr))
+        # теги по умолчанию (посидеть одному, итд)
+        DEFAULT_TAGS = [
+            (form.alone.data, 1), (form.together.data, 2), (form.outside.data, 3),
+            (form.eat.data, 4),
+            (form.move.data, 5), (form.work.data, 6), (form.hide.data, 7), (form.exciting.data, 8)
+        ]
+        valid_tags = list(filter(lambda x: x[0], DEFAULT_TAGS))
         for i in valid_tags:
             place_tag = PlaceTag(
-                        tag_id=i[1],
-                        place_id=place.id
-                    )
+                tag_id=i[1],
+                place_id=place.id
+            )
             db_sess.add(place_tag)
             db_sess.commit()
 
-
-        new_tags = [i[1:] for i in tags_self]
-        # доп. теги (проверка, существует ли он, если нет, добалвение его)
-        if new_tags:
-            for i in new_tags:
+        # доп. теги (проверка, существует ли они, если нет, добалвение их)
+        added_tags = (''.join((form.tag.data).split('\n'))).split('\r')
+        for i in added_tags:
+            if i:
                 if not db_sess.query(Tags).filter(Tags.title.like(i)).first():
                     tag = Tags(
                         title=i
@@ -260,92 +253,27 @@ def postplace():
                     )
                     db_sess.add(place_tag)
                     db_sess.commit()
-
-
-        return redirect("/")
-    return render_template('add_place.html', title='Добавление места')
-#     form = PlaceForm()
-#     if form.validate_on_submit():
-#         db_sess = db_session.create_session()
-#
-#         # проверка, правильный ли адрес через геокодер
-#         if not get_coordinates(form.address.data):
-#             return render_template('post.html', title='Добавление места',
-#                                    form=form,
-#                                    message="Такого адреса не существует")
-#
-#         filename = None
-#         if form.photo.data:
-#             filename = photos.save(form.photo.data)
-#             file_url = photos.url(filename)
-#
-#         place = Places(
-#             title=form.title.data,
-#             address=form.address.data,
-#             description=form.description.data,
-#             cost=form.cost.data,
-#             user_id=current_user.id,
-#             photo=filename
-#
-#         )
-#         db_sess.add(place)
-#         db_sess.commit()
-#
-#         # теги по умолчанию (посидеть одному, итд)
-#         DEFAULT_TAGS = [
-#             (form.alone.data, 1), (form.together.data, 2), (form.outside.data, 3),
-#             (form.eat.data, 4),
-#             (form.move.data, 5), (form.work.data, 6), (form.hide.data, 7), (form.exciting.data, 8)
-#         ]
-#         valid_tags = list(filter(lambda x: x[0], DEFAULT_TAGS))
-#         for i in valid_tags:
-#             place_tag = PlaceTag(
-#                 tag_id=i[1],
-#                 place_id=place.id
-#             )
-#             db_sess.add(place_tag)
-#             db_sess.commit()
-#
-#         # доп. тег (проверка, существует ли он, если нет, добалвение его)
-#         if form.tag.data:
-#             if not db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first():
-#                 tag = Tags(
-#                     title=form.tag.data
-#                 )
-#                 db_sess.add(tag)
-#                 db_sess.commit()
-#                 place_tag = PlaceTag(
-#                     tag_id=tag.id,
-#                     place_id=place.id
-#                 )
-#                 db_sess.add(place_tag)
-#                 db_sess.commit()
-#             else:
-#                 tag = db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first()
-#                 place_tag = PlaceTag(
-#                     tag_id=tag.id,
-#                     place_id=place.id
-#                 )
-#                 db_sess.add(place_tag)
-#                 db_sess.commit()
-#         return redirect('/')
-#     return render_template('add_place.html', title='Добавление места', form=form)
-
-
-
-
-
+        return redirect('/')
+    return render_template('add_place.html', title='Добавление места', form=form, tags=DEFAULT_TAGS_NAMES, url_im=url_im)
 
 
 # поиск места
 @app.route('/searchplace', methods=['GET', 'POST'])
 def searchplace():
+    url_im = user_photo(current_user)
     form = SearchForm()
+
     if form.validate_on_submit():
         if not get_coordinates(form.address.data) and form.address.data:
-            return render_template('search.html', title='Поиск места',
+            return render_template('search_place.html', title='Поиск места',
                                    form=form,
-                                   message="Такого адреса не существует")
+                                   message="Такого адреса не существует", url_im=url_im)
+        try:
+            a = int(form.cost.data)
+        except ValueError:
+            return render_template('add_place.html', title='Поиск места',
+                                   form=form,
+                                   message="Цена должна быть положительным целым числом", url_im=url_im)
         DEFAULT_TAGS = [
             (form.alone.data, 1), (form.together.data, 2), (form.outside.data, 3),
             (form.eat.data, 4),
@@ -356,25 +284,29 @@ def searchplace():
         db_sess = db_session.create_session()
 
         # теги
-
         valid_tags = list(filter(lambda x: x[0], DEFAULT_TAGS))
         tags = list(i[1] for i in valid_tags)
-        if form.tag.data:
-            if db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first():
-                tag = db_sess.query(Tags).filter(Tags.title.like(form.tag.data)).first()
-                tags.append(tag.id)
+
+        added_tags = (''.join((form.tag.data).split('\n'))).split('\r')
+        for i in added_tags:
+            if i:
+                if db_sess.query(Tags).filter(Tags.title.like(i)).first():
+                    tag = db_sess.query(Tags).filter(Tags.title.like(i)).first()
+                    tags.append(tag.id)
 
         # адрес и цена
         address = form.address.data
         cost = form.cost.data
 
         return redirect(url_for('searchresults', tags=tags, address=address, cost=cost))
-    return render_template('search.html', title='Поиск места', form=form)
+    return render_template('search_place.html', title='Поиск места', form=form, tags=DEFAULT_TAGS_NAMES, url_im=url_im)
 
 
 # результаты поиска
 @app.route('/searchresults', methods=['GET', 'POST'])
 def searchresults():
+    url_im = user_photo(current_user)
+
     # получаем инфу
     address = request.args.get('address', '')
     tags = [int(i) for i in request.args.getlist('tags')]
@@ -383,7 +315,7 @@ def searchresults():
     db_sess = db_session.create_session()
 
     # фильтруем результаты ПО ТЕГАМ и ЦЕНЕ
-    posts = db_sess.query(Places).filter(Places.cost >= cost, PlaceTag.place_id == Places.id)
+    posts = db_sess.query(Places).filter(Places.cost <= cost, PlaceTag.place_id == Places.id)
     filtered_by_tags = []
     for i in posts:
         a = [i.tag_id for i in db_sess.query(PlaceTag).filter(PlaceTag.place_id == i.id)]
@@ -401,51 +333,84 @@ def searchresults():
         for i in sorted_all:
             print(i.title)
             print(get_distance(get_coordinates(address), get_coordinates(i.address)))
-    return render_template('results.html', title='Результаты поиска', posts=sorted_all)
+
+    places = db_sess.query(Places).filter(Places.title != '')
+    place_tags = db_sess.query(PlaceTag).filter()
+    tags = db_sess.query(Tags).filter()
+    return render_template('results.html', title='Результаты поиска', places=sorted_all, tags=tags, place_tags=place_tags, url_im=url_im)
 
 
 # профиль пользователя
 @login_required
-@app.route('/user_profile')
+@app.route('/user_profile', methods=['GET', 'POST'])
 def user_profile():
-    db_sess = db_session.create_session()
-    posts = db_sess.query(Places).filter(Places.user_id == current_user.id).all()
-    photo = ''
-    if current_user.photo:
-        photo = UPLOAD_FOLDER + current_user.photo
-    params = {
-        'name': current_user.name,
-        'photo': photo,
-        'posts': posts,
-        'created_date': current_user.created_date
-    }
     form = ChangeProfileForm()
+    db_sess = db_session.create_session()
+
+    posts = db_sess.query(Places).filter(Places.user_id == current_user.id).all()
+    url_im = user_photo(current_user)
+
+    all = {
+        'name': current_user.name,
+        'url_im': url_im,
+        'image_way': url_im[4:-1],
+        'email': current_user.email,
+        'arr_title': [i.title for i in posts],
+        'images_way': [f'{UPLOAD_FOLDER + str(i.photo)}' for i in posts],
+        'arr_text': [i.description for i in posts],
+        'count_posts': len([i.id for i in posts]),
+        'place_id': [i.id for i in posts]
+
+    }
     if form.validate_on_submit():
         user = db_sess.query(User).filter(User.id == current_user.id,
                                           User.name == current_user.name
                                           ).first()
 
-        if form.name.data:
-            user.name = form.name.data
+        print(current_user, 123, user)
+
+        user.name = form.name.data
+        print(form.name.data, user.name)
+
+        if not (form.email.data == current_user.email) and db_sess.query(User).filter(User.email == form.email.data).all():
+            return render_template("settings.html", **all, form=form)
         else:
-            user.name = current_user.name
-        if form.email.data:
             user.email = form.email.data
-        else:
-            user.email = current_user.email
         if form.photo.data:
-            user.photo = form.name.data
-        else:
-            user.name = current_user.name
-        if form.photo.data:
-            filename = photos.save(form.photo.data)
-            file_url = photos.url(filename)
+            photos.save(form.photo.data)
+            user.photo = form.photo.data.filename
 
-        # news.is_private = form.is_private.data
-        # db_sess.commit()
-        # db_sess.commit()
+        print(user.name, user.email, user.photo)
+        db_sess.commit()
 
-    return render_template("profile.html", **params)
+        return redirect("/")
+
+    return render_template("settings.html", **all, form=form)
+
+
+@app.route("/place/<int:id>", methods=["POST", "GET"])
+def place(id):
+    url_im = user_photo(current_user)
+
+    db_sess = db_session.create_session()
+    place = db_sess.query(Places).filter(Places.id == id).first()
+
+    place_tags = db_sess.query(PlaceTag).filter(PlaceTag.place_id == place.id)
+    tags = []
+    for i in place_tags:
+        tags.append((db_sess.query(Tags).filter(i.tag_id == Tags.id).first().title))
+
+    all = {
+            "title": place.title,
+            "address": place.address,
+            "text": place.description,
+            "scr": f'/{UPLOAD_FOLDER + str(place.photo)}',
+            "tags": tags,
+            "cost": place.cost,
+            "url_im": 'url(/' + url_im[4:-1] + ')'
+        }
+    if request.method == "GET":
+        return render_template("place.html", **all)
 
 
 @app.route('/logout')
@@ -463,7 +428,12 @@ def load_user(user_id):
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+    return 'Ой! Что-то пошло не так. Скорее всего, такой страницы не существует :(', 404
+
+
+@app.errorhandler(401)
+def unauthorized(e):
+    return 'Зарегистрируйтесь, чтобы просмотреть эту страницу ;)', 401
 
 
 if __name__ == '__main__':

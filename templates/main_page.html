@@ -20,7 +20,7 @@
     <div class="form-place">
         <div class="header_form_place">
             <div>
-                <a href="/place_id" class="no_underline name_place">{{place.title}}</a>
+                <a href="/place/{{ place.id }}" class="no_underline name_place">{{place.title}}</a>
                 <span class="lower_address">{{place.address}}</span>
             </div>
 
@@ -59,8 +59,9 @@
             </div>
         </div>
     </div>
+    {% endfor %}
 </div>
 
-{% endfor %}
+
 
 {% endblock %}
