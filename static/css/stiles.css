@@ -260,6 +260,7 @@ button{
 }
 
 .header_form_place{
+    margin: 20px;
     display: flex;
     justify-content: space-between;
 }
@@ -522,4 +523,8 @@ button{
 .margin-up-down{
     margin-bottom: 15px;
     margin-top: 15px;
+}
+
+.no-underline{
+    text-underline: None;
 }
