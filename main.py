@@ -1,7 +1,8 @@
 import requests
 from flask import Flask
-from flask import redirect, make_response, request, render_template, jsonify, url_for
+from flask import redirect, request, render_template, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 
 # дб
 from data import db_session
@@ -17,7 +18,6 @@ from forms.places import PlaceForm, SearchForm
 import requests
 import math
 import os
-from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 
 
 app = Flask(__name__)
